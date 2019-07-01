@@ -24,6 +24,8 @@ docker build -t ssh-tunnel-client .
 # 1. init
 docker run -it \
     --name=ssh-tunnel-client \
+    -e SSH_SERVER=xxx.xxx.xxx.xxx \
+    -e SSH_SERVER_PORT=2222 \
     -v /path/to/data:/ssh-tunnel-client/var \
     ssh-tunnel-client
 
