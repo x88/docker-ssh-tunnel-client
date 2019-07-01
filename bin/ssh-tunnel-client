@@ -5,7 +5,7 @@ INSTALL_DIR="$SCRIPT_DIR/../"
 
 [[ ! -f "$INSTALL_DIR/var/.inited" ]] && "$INSTALL_DIR/bin/ssh-tunnel-client-init" && exit 0
 
-chmod 600 "$INSTALL_DIR/var/id_rsa" && mkdir -p ~/.ssh && ln -sf "$INSTALL_DIR/var/id_rsa" ~/.ssh/id_rsa
+chown $(whoami) "$INSTALL_DIR/var/id_rsa" && chmod 600 "$INSTALL_DIR/var/id_rsa" && mkdir -p ~/.ssh && ln -sf "$INSTALL_DIR/var/id_rsa" ~/.ssh/id_rsa
 
 source "$INSTALL_DIR/var/rules"
 
