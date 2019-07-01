@@ -1,0 +1,12 @@
+#! /usr/bin/env sh
+
+SCRIPT_DIR="$(dirname $0)"
+INSTALL_DIR="$SCRIPT_DIR/../"
+
+[[ ! -f "$INSTALL_DIR/var/.inited" ]] && "$INSTALL_DIR/bin/ssh-tunnel-client-init" && exit 0
+
+chmod 600 "$INSTALL_DIR/var/id_rsa" && mkdir -p ~/.ssh && ln -sf "$INSTALL_DIR/var/id_rsa" ~/.ssh/id_rsa
+
+source "$INSTALL_DIR/var/rules"
+
+ssh -N $OPT_RULE -p $SSH_SERVER_PORT $SSH_USER@$SSH_SERVER

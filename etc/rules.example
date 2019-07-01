@@ -1,0 +1,11 @@
+#! /usr/bin/env sh
+
+# the value of OPT_RULE variable will be added to ssh command line as paraeter
+
+function add_rule() {
+    OPT_RULE="$OPT_RULE $@"
+}
+
+# example:
+# this rule indicate that the requests to server:8443 will be forwarded to www.baidu.com:443 by client
+# add_rule "-R 8443:www.baidu.com:443"
