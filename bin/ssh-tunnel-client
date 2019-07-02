@@ -32,33 +32,35 @@ if [[ ! -f "$INIT_STATUS_FILE_LOCATION" ]]; then
     exit 0
 fi
 
-# parameters check
-[[ -z "$OPT_RULE" ]] && echo "[ERROR]:" "parameter OPT_RULE is blank !!!" && exit 1
-echo "[INFO]:" "using OPT_RULE ->" "$OPT_RULE"
-[[ -z "$SSH_SERVER_PORT" ]] && echo "[ERROR]:" "parameter SSH_SERVER_PORT is blank !!!" && exit 1
-echo "[INFO]:" "using SSH_SERVER_PORT ->" "$SSH_SERVER_PORT"
-[[ -z "$SSH_SERVER" ]] && echo "[ERROR]:" "parameter SSH_SERVER is blank !!!" && exit 1
-echo "[INFO]:" "using SSH_SERVER ->" "$SSH_SERVER"
-[[ -z "$SSH_USER" ]] && echo "[ERROR]:" "parameter SSH_USER is blank !!!" && exit 1
-echo "[INFO]:" "using SSH_USER ->" "$SSH_USER"
-echo "[INFO]:" "using ADD_SSH_CLIENT_OPT ->" "$ADD_SSH_CLIENT_OPT"
-
-# start service
+# entry point
 while true
 do
+    echo "[INFO]:" "SSH client starting ......"
+
+    # parameter check
+    OPT_RULE="" && source "$INSTALL_DIR/var/rules"
+    [[ -z "$OPT_RULE" ]] && echo "[ERROR]:" "parameter OPT_RULE is blank !!!" && exit 1
+    echo "[INFO]:" "using OPT_RULE ->" "$OPT_RULE"
+    [[ -z "$SSH_SERVER_PORT" ]] && echo "[ERROR]:" "parameter SSH_SERVER_PORT is blank !!!" && exit 1
+    echo "[INFO]:" "using SSH_SERVER_PORT ->" "$SSH_SERVER_PORT"
+    [[ -z "$SSH_SERVER" ]] && echo "[ERROR]:" "parameter SSH_SERVER is blank !!!" && exit 1
+    echo "[INFO]:" "using SSH_SERVER ->" "$SSH_SERVER"
+    [[ -z "$SSH_USER" ]] && echo "[ERROR]:" "parameter SSH_USER is blank !!!" && exit 1
+    echo "[INFO]:" "using SSH_USER ->" "$SSH_USER"
+    echo "[INFO]:" "using ADD_SSH_CLIENT_OPT ->" "$ADD_SSH_CLIENT_OPT"
+
+    # start SSH client
     (
         chown $(whoami) "$INSTALL_DIR/var/id_rsa" && \
         chmod 600 "$INSTALL_DIR/var/id_rsa" && \
         mkdir -p ~/.ssh && \
         ln -sf "$INSTALL_DIR/var/id_rsa" ~/.ssh/id_rsa && \
-        OPT_RULE="" && \
-        source "$INSTALL_DIR/var/rules" && \
         ssh -N $OPT_RULE -p $SSH_SERVER_PORT $SSH_USER@$SSH_SERVER $ADD_SSH_CLIENT_OPT
     ) &
     
     SSH_PID=$!
     
-    # watch rules modify, kill ssh when 
+    # start rules monitor 
     (inotifywait -e modify "$INSTALL_DIR/var/rules" && kill $SSH_PID) &
 
     INOTIFY_PID=$!
