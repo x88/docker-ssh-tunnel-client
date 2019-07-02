@@ -33,17 +33,15 @@ if [[ ! -f "$INIT_STATUS_FILE_LOCATION" ]]; then
 fi
 
 # parameters check
-function error_echo() {echo "[ERROR]:" $@}
-function info_echo() {echo "[INFO]:" $@}
-[[ -z "$OPT_RULE" ]] && error_echo "parameter OPT_RULE is blank !!!" && exit 1
-info_echo "using OPT_RULE ->" "$OPT_RULE"
-[[ -z "$SSH_SERVER_PORT" ]] && error_echo "parameter SSH_SERVER_PORT is blank !!!" && exit 1
-info_echo "using SSH_SERVER_PORT ->" "$SSH_SERVER_PORT"
-[[ -z "$SSH_SERVER" ]] && error_echo "parameter SSH_SERVER is blank !!!" && exit 1
-info_echo "using SSH_SERVER ->" "$SSH_SERVER"
-[[ -z "$SSH_USER" ]] && error_echo "parameter SSH_USER is blank !!!" && exit 1
-info_echo "using SSH_USER ->" "$SSH_USER"
-[[ ! -z "$ADD_SSH_CLIENT_OPT" ]] && info_echo "using ADD_SSH_CLIENT_OPT ->" "$ADD_SSH_CLIENT_OPT"
+[[ -z "$OPT_RULE" ]] && echo "[ERROR]:" "parameter OPT_RULE is blank !!!" && exit 1
+echo "[INFO]:" "using OPT_RULE ->" "$OPT_RULE"
+[[ -z "$SSH_SERVER_PORT" ]] && echo "[ERROR]:" "parameter SSH_SERVER_PORT is blank !!!" && exit 1
+echo "[INFO]:" "using SSH_SERVER_PORT ->" "$SSH_SERVER_PORT"
+[[ -z "$SSH_SERVER" ]] && echo "[ERROR]:" "parameter SSH_SERVER is blank !!!" && exit 1
+echo "[INFO]:" "using SSH_SERVER ->" "$SSH_SERVER"
+[[ -z "$SSH_USER" ]] && echo "[ERROR]:" "parameter SSH_USER is blank !!!" && exit 1
+echo "[INFO]:" "using SSH_USER ->" "$SSH_USER"
+echo "[INFO]:" "using ADD_SSH_CLIENT_OPT ->" "$ADD_SSH_CLIENT_OPT"
 
 # start service
 while true

@@ -49,3 +49,5 @@ Host *
     ConnectTimeout 10
     ServerAliveInterval 60
     ServerAliveCountMax 10
+    PasswordAuthentication no
+    BatchMode yes
