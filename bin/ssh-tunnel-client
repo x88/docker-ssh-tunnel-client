@@ -70,7 +70,7 @@ do
     echo "SSH client stopped."
 
     # stop ruels watcher
-    kill -0 $INOTIFY_PID > /dev/null 2>&1 && kill $INOTIFY_PID
+    kill -0 $INOTIFY_PID > /dev/null 2>&1 && kill $INOTIFY_PID && wait $INOTIFY_PID
     
     sleep 2
 done
