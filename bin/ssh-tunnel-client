@@ -1,13 +1,63 @@
 #! /usr/bin/env sh
 
-SCRIPT_DIR="$(dirname $0)"
-INSTALL_DIR="$SCRIPT_DIR/../"
+SCRIPT_DIR=$(dirname "$0")
+INSTALL_DIR=$(dirname "$SCRIPT_DIR")
 
-[[ ! -f "$INSTALL_DIR/var/.inited" ]] && "$INSTALL_DIR/bin/ssh-tunnel-client-init" && exit 0
+# client init
+INIT_STATUS_FILE_LOCATION="$INSTALL_DIR/var/.init"
+if [[ ! -f "$INIT_STATUS_FILE_LOCATION" ]]; then
+    # id_rsa init
+    ID_RSA_LOCATION="$INSTALL_DIR/var/id_rsa"
+    if [[ ! -f "$ID_RSA_LOCATION" ]]; then
+        ! (
+            printf "generating rsa key ......." && \
+            ssh-keygen -q -t rsa -b 4096 -N "" -f "$ID_RSA_LOCATION" && \
+            printf "done.\n" && \
+            echo "Please ADD the following public key to SSH Server, then RESTART the client service" && \
+            ssh-keygen -y -f "$ID_RSA_LOCATION"
+        ) && exit 1
+    fi
 
+    # rules init
+    RULES_LOCATION="$INSTALL_DIR/var/rules"
+    if [[ ! -f "$RULES_LOCATION" ]]; then
+        ! (
+            cp "$INSTALL_DIR/etc/rules.example" "$INSTALL_DIR/var/rules" && \
+            echo "Please ADD some rules to $INSTALL_DIR/var/rules, then RESTART the client service"
+        ) && exit 1
+    fi
+
+    # record init status
+    echo "$(date)" > "$INIT_STATUS_FILE_LOCATION" && \
+    exit 0
+fi
+
+# start service
 while true
 do
-    chown $(whoami) "$INSTALL_DIR/var/id_rsa" && chmod 600 "$INSTALL_DIR/var/id_rsa" && mkdir -p ~/.ssh && ln -sf "$INSTALL_DIR/var/id_rsa" ~/.ssh/id_rsa
-    source "$INSTALL_DIR/var/rules"
-    ssh -N $OPT_RULE -p $SSH_SERVER_PORT $SSH_USER@$SSH_SERVER
+    (
+        chown $(whoami) "$INSTALL_DIR/var/id_rsa" && \
+        chmod 600 "$INSTALL_DIR/var/id_rsa" && \
+        mkdir -p ~/.ssh && \
+        ln -sf "$INSTALL_DIR/var/id_rsa" ~/.ssh/id_rsa && \
+        OPT_RULE="" && \
+        source "$INSTALL_DIR/var/rules" && \
+        ssh -N $OPT_RULE -p $SSH_SERVER_PORT $SSH_USER@$SSH_SERVER
+    ) &
+    
+    SSH_PID=$!
+    
+    # watch rules modify, kill ssh when 
+    (inotifywait -e modify "$INSTALL_DIR/var/rules" && kill $SSH_PID) &
+
+    INOTIFY_PID=$!
+
+    kill -0 $SSH_PID && echo "SSH client started." && wait $SSH_PID
+    
+    echo "SSH client stopped."
+
+    # stop ruels watcher
+    kill -0 $INOTIFY_PID > /dev/null 2>&1 && kill $INOTIFY_PID
+    
+    sleep 2
 done

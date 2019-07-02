@@ -2,7 +2,9 @@
 
 ## Features
 
-- TCP Port Forwarding
+- [x] tcp port forward
+- [x] reconnect on failure
+- [x] reload rules automatically
 
 ## Build
 
@@ -14,9 +16,9 @@ docker build -t ssh-tunnel-client .
 
 | variable | desc | default |
 | -- | -- | :--: |
-| SSH_SERVER | SSH Server Address connect to | none |
-| SSH_SERVER_PORT | SSH Server Port connect to | 22 |
-| SSH_USER | the User who is used to connect | root |
+| SSH_SERVER | SSH Server Address to connect | none |
+| SSH_SERVER_PORT | SSH Server Port to connect | 22 |
+| SSH_USER | the User of SSH Server who is used to connect | root |
 
 ## Usage
 

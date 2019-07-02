@@ -1,6 +1,6 @@
 FROM alpine:3.10
 
-RUN apk add --no-cache openssh
+RUN apk add --no-cache openssh inotify-tools
 
 COPY ./ /ssh-tunnel-client
 RUN \
