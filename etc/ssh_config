@@ -46,5 +46,6 @@
 
 Host *
     StrictHostKeyChecking no
+    ConnectTimeout 10
     ServerAliveInterval 60
     ServerAliveCountMax 10
