@@ -19,6 +19,7 @@ docker build -t ssh-tunnel-client .
 | SSH_SERVER | SSH Server Address to connect | none |
 | SSH_SERVER_PORT | SSH Server Port to connect | 22 |
 | SSH_USER | the User of SSH Server who is used to connect | root |
+| ADD_SSH_CLIENT_OPT | additinal options add to SSH client commandline | none |
 
 ## Usage
 

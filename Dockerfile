@@ -10,6 +10,7 @@ ln -sf /ssh-tunnel-client/etc/ssh_config /etc/ssh/ssh_config
 ENV SSH_SERVER ""
 ENV SSH_SERVER_PORT "22"
 ENV SSH_USER "root"
+ENV ADD_SSH_CLIENT_OPT ""
 
 VOLUME /ssh-tunnel-client/var
 

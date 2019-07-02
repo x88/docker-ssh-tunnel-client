@@ -32,6 +32,19 @@ if [[ ! -f "$INIT_STATUS_FILE_LOCATION" ]]; then
     exit 0
 fi
 
+# parameters check
+function error_echo() {echo "[ERROR]:" $@}
+function info_echo() {echo "[INFO]:" $@}
+[[ -z "$OPT_RULE" ]] && error_echo "parameter OPT_RULE is blank !!!" && exit 1
+info_echo "using OPT_RULE ->" "$OPT_RULE"
+[[ -z "$SSH_SERVER_PORT" ]] && error_echo "parameter SSH_SERVER_PORT is blank !!!" && exit 1
+info_echo "using SSH_SERVER_PORT ->" "$SSH_SERVER_PORT"
+[[ -z "$SSH_SERVER" ]] && error_echo "parameter SSH_SERVER is blank !!!" && exit 1
+info_echo "using SSH_SERVER ->" "$SSH_SERVER"
+[[ -z "$SSH_USER" ]] && error_echo "parameter SSH_USER is blank !!!" && exit 1
+info_echo "using SSH_USER ->" "$SSH_USER"
+[[ ! -z "$ADD_SSH_CLIENT_OPT" ]] && info_echo "using ADD_SSH_CLIENT_OPT ->" "$ADD_SSH_CLIENT_OPT"
+
 # start service
 while true
 do
@@ -42,7 +55,7 @@ do
         ln -sf "$INSTALL_DIR/var/id_rsa" ~/.ssh/id_rsa && \
         OPT_RULE="" && \
         source "$INSTALL_DIR/var/rules" && \
-        ssh -N $OPT_RULE -p $SSH_SERVER_PORT $SSH_USER@$SSH_SERVER
+        ssh -N $OPT_RULE -p $SSH_SERVER_PORT $SSH_USER@$SSH_SERVER $ADD_SSH_CLIENT_OPT
     ) &
     
     SSH_PID=$!
